@@ -15,7 +15,8 @@ let flag1=true;
 let weight = Array.from({ length: 3 }, () => Array(6).fill(0));
 let points = [];
 let gamestates = [];
-let currentstate = 0;
+let noofundo = -1;
+let history = [];
 window.circle = [];
 for(let i=0;i<3;i++){
     window.circle.push([]);
@@ -35,9 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(neighbouringcircles);
     console.log(window.circle);
     starttime();
+    gamestates.push(snapshotCircles());
+    noofundo++;
     document.getElementById("pause").addEventListener("click",() => {
         if(!pausegame){
-            clearInterval(interval1);
+        clearInterval(interval1);
         clearInterval(interval1);
         pausegame = true;
         const popup =document.getElementById("result");
@@ -56,22 +59,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         document.getElementById("clicksound").play();
     });
-    // document.getElementsByClassName("resume")[0].addEventListener("click",() => {
-    //     if(pausegame){
-    //     interval1 = setInterval(()=>decreamenttime(),1000);
-    //     interval2 = setInterval(()=>checktimeout(),1000);
-    //     pausegame = false;
-    //     const popup =document.getElementById("result");
-    //     popup.style.display = "none";
-    //     }
-    //     document.getElementById("clicksound").play();
-    // });
     document.getElementById("reset").addEventListener("click",() => {
         document.getElementById("clicksound").play();
         setTimeout(location.reload(),1000);
     })
+    document.getElementById("undo").addEventListener("click",() => {
+        document.getElementById("clicksound").play();
+        undo();
+    })
+    document.getElementById("redo").addEventListener("click",() => {
+        document.getElementById("clicksound").play();
+        redo();
+    })
 });
-
 function createhexpoints(a, svg) {
     for (let j = 0; j < 3; j++) {
         let hexpoints = [];
@@ -140,6 +140,9 @@ function createcircle(p, svg,i,j) {
             circle.dataset.player = currentplayer.toString();
             remainingtitans[currentplayer]--;
             currentplayer = 3 - currentplayer ;
+            gamestates = gamestates.slice(0,noofundo+1);
+            gamestates.push(snapshotCircles());
+            noofundo++;
             setcolor();
             innerringunlocked();
             scorecalculation();
@@ -229,6 +232,7 @@ function createcircle(p, svg,i,j) {
             erroraudio();
             return;
         }
+        
         circle.setAttribute("fill", currentplayer === 1 ? "blue" : "red");
         circle.setAttribute("stroke", currentplayer === 1 ? "cornflowerblue" : "crimson");
         circle.dataset.player = currentplayer;
@@ -238,6 +242,9 @@ function createcircle(p, svg,i,j) {
         console.log(`Moved from ${selectedcircle.dataset.index} to ${circle.dataset.index}`);
         selectedcircle = null;
         currentplayer = 3 - currentplayer;
+        gamestates = gamestates.slice(0,noofundo+1);
+        gamestates.push(snapshotCircles());
+        noofundo++;
         setcolor();
         innerringunlocked();
         eliminatetitan();
@@ -543,6 +550,7 @@ function checktimeout(){
         if(selectedcircle != null)
         {
             selectedcircle.setAttribute("fill",currentplayer == 1? "blue" : "red");
+            selectedcircle.setAttribute("stroke",currentplayer == 1? "cornflowerblue" : "crimson");
             selectedcircle = null;
         }
         currentplayer = 3 - currentplayer;
@@ -587,4 +595,47 @@ function winaudio(){
 function killaudio(){
     const killsound = document.getElementById("killsound");
     killsound.play();
+}
+function snapshotCircles() {
+    let snapshot = [];
+    for (let i = 0; i < 3; i++) {
+        snapshot.push([]);
+        for (let j = 0; j < 6; j++) {
+            let c = window.circle[i][j];
+            snapshot[i].push({
+                stroke: c.getAttribute("stroke"),
+                fill: c.getAttribute("fill"),
+                strokewidth: c.getAttribute("stroke-width"),
+                player: c.dataset.player
+            });
+        }
+    }
+    return snapshot;
+}
+function undo() {
+    if(noofundo > 0){
+        noofundo--;
+        changegamestate();
+    }
+}
+function redo(){
+    const temp = gamestates.length;
+    if(noofundo < temp - 1){
+        noofundo++;
+        changegamestate();
+    }
+}
+function changegamestate(){
+    let tempcircles = gamestates[noofundo];
+        for(let i =0;i< 3;i++){
+            for(let j = 0; j< 6;j++){
+                const stroke = tempcircles[i][j].stroke;
+                const fill = tempcircles[i][j].fill;
+                const strokewidth = tempcircles[i][j].strokewidth;
+                window.circle[i][j].setAttribute("stroke",stroke);
+                window.circle[i][j].setAttribute("stroke-width",strokewidth);
+                window.circle[i][j].setAttribute("fill",fill);
+                window.circle[i][j].dataset.player = tempcircles[i][j].player;
+            }
+        }
 }
