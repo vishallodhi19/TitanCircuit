@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title> TITAN's CIRCUIT </title>
+        <link href="TitanCircuit.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="hexagonalgrid">
+            <svg class="field" width="700"
+                 height="700"
+                  viewBox="-350 -350 700 700" preserveAspectRatio="xMidYMid meet">
+            </svg>
+             <div class="result" id="result">
+                  Game Over!
+             </div>  
+        </div>
+            <div class="scorecard-container">
+            <table  class="scorecard" >
+                <tr class="blue">
+                    <td> Blue </td>
+                    <td id="bluescore"> 0 </td>
+                    <td id="bluetime"> 05: 00 </td>
+                </tr>
+                <tr class="red">
+                    <td> Red </td>
+                    <td id="redscore"> 0 </td>
+                    <td id="redtime"> 05: 00 </td>
+                </tr>
+            </table>
+        </div>
+        <div class="playercard">
+            <div class="child" id="player"> BLUE </div>
+            <div class="child" id="timeremain"> 30s </div>
+        </div>
+
+        <div class="selectmode">
+            <button id="pause"><img id="pauseid" src="pause.png" alt="pause" height="20px" width="20px"></button>
+            <button id="reset"> <img src="reset.png" alt="reset" height="25px" width="25px"> </button>
+        </div>
+        <audio id="selectsound" src="mixkit-interface-device-click-2577.wav" preload="auto" ></audio>
+        <audio id="jumpsound" src="mixkit-arcade-game-jump-coin-216.wav" preload="auto"></audio>
+        <audio id="errorsound" src="erro.mp3" preload="auto"></audio>
+        <audio id="winsound" src="mixkit-ethereal-fairy-win-sound-2019.wav" preload="auto"></audio>
+        <audio id="killsound" src="sword-demo-310496.mp3" preload="auto"></audio>
+        <audio id="clicksound" src="mouse-click-331781.mp3" preload="auto"></audio>
+        <script src="TitanCircuit.js"> </script>
+    </body>
+</html>           

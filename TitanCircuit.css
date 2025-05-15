@@ -1,0 +1,216 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #252a32;
+    background-image: url(Background\ 4.png);
+    background-size: cover;
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+.hexagonalgrid{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw; 
+    position: relative;
+    z-index: 1;
+}
+.field {
+    display: block;
+    margin: auto;
+    width: min(90vw, 90vh);
+    max-width: 700px;
+    max-height: 700px;
+    height: auto;
+}
+.scorecard-container {
+    position: fixed;
+    top: 5%;
+    right: 5%;
+    border: 1px solid #444;
+    border-radius: 10px;
+    background-color: #2c2f3f;
+    padding: 5px;
+    box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.4);
+    transform: scale(1.0);
+}
+
+.scorecard {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.scorecard td {
+    padding: 10px;
+    border: 1px solid #444;
+    font-size: 2em;
+}
+
+.scorecard .blue td {
+    background-color: cornflowerblue; 
+    color: white;
+}
+
+.scorecard .red td {
+    background-color: crimson; 
+    color: white;
+}
+
+.playercard {
+    position: fixed;
+    top: 5%;
+    left: 5%;
+    width: 140px;
+    height: 90px;
+    background-color: cornflowerblue; 
+    border: 3px solid #5d5a5a;
+    border-radius: 10px;
+    box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.8em;
+}
+
+.playercard .child {
+    margin: 0px;
+    text-align: center;
+}
+.result {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #444;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    font-size: 2em;
+    text-align: center;
+    display: none; 
+    z-index: 100;
+}
+.selectmode {
+    position: absolute;
+    top: 50%;
+    left: 90%;
+    transform: translateY(-50%);
+    width: 52px;
+    height: 100px;
+    background-color:#252a32;
+    border: 2px solid #5d5a5a;
+    border-radius: 26px;
+    box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.selectmode button {
+    background-color: #5d5a5a;
+    margin: 5px;
+    height: 36px;
+    width: 36px;
+    border-radius: 18px;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+.selectmode button img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+    display: block;
+    pointer-events: none;
+}
+.selectmode button:hover{
+    background-color: rgb(54, 56, 55);
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.4);
+    transition: 0.8s;
+}
+@media (max-aspect-ratio: 1/1) {
+    .selectmode {
+        position: fixed;
+        top: 0%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        height: 3.2vh;
+        min-height: 40px;
+        max-height: 60px;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        border-bottom: 3px solid #5d5a5a;
+        padding: 16px;
+        gap: 1vh;
+    }
+    .selectmode button {
+        width: 5vh;
+        height: 5vh;
+        min-width: 32px;
+        min-height: 32px;
+        max-width: 48px;
+        max-height: 48px;
+        margin: 0 1vw;
+        border-radius: 50%;
+    }
+    .selectmode button img {
+        width: 80%;
+        height: 80%;
+    }
+    .hexagonalgrid {
+        position: relative;
+        margin-top: 25vh;
+        height: 92vh;
+        width: 100vw;
+        align-items: center;
+        justify-content: space-evenly;
+    }
+    .field {
+        margin-top: 5vh;
+        width: 96vw;
+        height: auto;
+        max-height: 90vh;
+        display: block;
+    }
+    .playercard{
+        position: fixed;
+        top: 20%;
+        left:20%;
+        height: 8vh;
+        width:  10vh;
+        max-width: 162px;
+        min-width: 100px;
+        max-height: 140px;
+        min-height: 65px;
+        font-weight: bolder;
+        transform: scale(1.1);
+    }
+    .scorecard-container{
+        position: fixed;
+        top:20%;
+        right: 20%;
+        transform: scale(1.1);
+    }
+    .result{
+        position: fixed;
+        top: 10%;
+    }
+}
