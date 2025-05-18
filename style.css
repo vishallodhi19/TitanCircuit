@@ -251,6 +251,7 @@ body {
         top: 10%;
     }
     .historycontainer{
+        display: none;
         height: 100%;
         width: 50%;
         font-size: 1.3em;
