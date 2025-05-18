@@ -286,8 +286,8 @@ function createcircle(p, svg,i,j) {
         noofundo++;
         setcolor();
         innerringunlocked();
-        eliminatetitan();
         scorecalculation();
+        eliminatetitan();
         decidewinner();
         jumpaudio();
         starttime();
@@ -440,22 +440,32 @@ function eliminatetitan(){
                 const newmove = document.createElement("p");
                 newmove.textContent =  "   -->   " + str;
                 historywindow.appendChild(newmove);
-                ownedtitans[currentplayer]--;
-                decidewinner();
             }
         }
     }
     if(eliminated){
         setTimeout(killaudio,500);
+        let str;
+        if(currentplayer == 2)
+            str = "RED TITAN ELIMINATED !";
+        else
+            str ="BLUE TITAN ELIMINATED !";
+        showalert(str);
     }
 }
 function scorecalculation(){
+    ownedtitans[1] = 0;
+    ownedtitans[2] = 0;
     bluescore = 0;
     redscore = 0;
     for(let i=0;i<3;i++){
         for(let j=0;j<6;j++){
             let temptitan = window.circle[i][j];
             if(temptitan.dataset.player == '0')   continue;
+            if(temptitan.dataset.player == '1')
+                ownedtitans[1]++;
+            else
+                ownedtitans[2]++;
             const neighbour = neighbouringcircles[i][j];
             for( let x of neighbour){
                 const temp = x.circle.dataset.player;
@@ -619,6 +629,11 @@ function checktimeout(){
         setcolor();
         starttime();
     }
+    else if(timeperturn == 10){
+        let str = "Skipping The Turn...";
+        showalert(str);
+        clocksound();
+    }
 }
 function setcolor(){
     const playercard = document.getElementsByClassName("playercard")[0];
@@ -658,6 +673,12 @@ function killaudio(){
     const killsound = document.getElementById("killsound");
     killsound.play();
 }
+function clocksound(){
+    const clocksound = document.getElementById("clocksound");
+    clocksound,currentTime = 0;
+    clocksound.play();
+    setTimeout(()=> stopaudio(clocksound), 1500);
+}
 function snapshotCircles() {
     let snapshot = [];
     for (let i = 0; i < 3; i++) {
@@ -678,6 +699,7 @@ function undo() {
     if(noofundo > 0){
         noofundo--;
         changegamestate();
+        eliminatetitan();
         currentplayer = 3 - currentplayer;
         remainingtitans[currentplayer]++;
         starttime();
@@ -690,6 +712,7 @@ function redo(){
         noofundo++;
         changegamestate();
         currentplayer = 3 - currentplayer;
+        eliminatetitan();
         remainingtitans[currentplayer]--;
         starttime();
         setcolor();
@@ -708,4 +731,21 @@ function changegamestate(){
                 window.circle[i][j].dataset.player = tempcircles[i][j].player;
             }
         }
+}
+function showalert(str){
+    const alertconatiner = document.getElementById("alertbox");
+    document.getElementById('alert').textContent = str;
+    alertconatiner.classList.remove('hidden');
+    void alertconatiner.offsetWidth;
+    alertconatiner.classList.add('show');
+    setTimeout(() => {
+        alertconatiner.classList.remove('show');
+        setTimeout(() => {
+            alertconatiner.classList.add("hidden");
+        }, 800);
+    }, 1500);
+}
+function stopaudio(audiosource){
+    if(!audiosource)  return;
+    audiosource.pause();  
 }
