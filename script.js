@@ -17,6 +17,8 @@ let points = [];
 let gamestates = [];
 let noofundo = -1;
 let history = [];
+var counter = 0;
+var winner = 0;
 window.circle = [];
 for(let i=0;i<3;i++){
     window.circle.push([]);
@@ -39,37 +41,54 @@ document.addEventListener("DOMContentLoaded", () => {
     gamestates.push(snapshotCircles());
     noofundo++;
     document.getElementById("pause").addEventListener("click",() => {
-        if(!pausegame){
-        clearInterval(interval1);
-        clearInterval(interval1);
-        pausegame = true;
-        const popup =document.getElementById("result");
-        popup.style.display = "flex";
-        popup.style.background = "green"
-        popup.innerHTML="GAME PAUSED!"
-        document.getElementById("pauseid").setAttribute("src","play-buttton.png");
+        if(!gameover)
+        {
+            if(!pausegame){
+            clearInterval(interval1);
+            clearInterval(interval1);
+            pausegame = true;
+            const popup =document.getElementById("result");
+            popup.style.display = "flex";
+            popup.style.background = "green"
+            popup.innerHTML="GAME PAUSED!"
+            document.getElementById("pauseid").setAttribute("src","play-buttton.png");
+            }
+            else{
+                interval1 = setInterval(()=>decreamenttime(),1000);
+            interval2 = setInterval(()=>checktimeout(),1000);
+            pausegame = false;
+            const popup =document.getElementById("result");
+            popup.style.display = "none";
+            document.getElementById("pauseid").setAttribute("src","pause.png");
+            }
+            document.getElementById("clicksound").play();
         }
-        else{
-            interval1 = setInterval(()=>decreamenttime(),1000);
-        interval2 = setInterval(()=>checktimeout(),1000);
-        pausegame = false;
-        const popup =document.getElementById("result");
-        popup.style.display = "none";
-        document.getElementById("pauseid").setAttribute("src","pause.png");
-        }
-        document.getElementById("clicksound").play();
     });
     document.getElementById("reset").addEventListener("click",() => {
         document.getElementById("clicksound").play();
         setTimeout(location.reload(),1000);
     })
     document.getElementById("undo").addEventListener("click",() => {
-        document.getElementById("clicksound").play();
-        undo();
+        if(!gameover)
+          {
+            document.getElementById("clicksound").play();
+            undo();
+          }
     })
     document.getElementById("redo").addEventListener("click",() => {
+        if(!gameover)
+        {
+            document.getElementById("clicksound").play();
+            redo();
+        }
+    })
+    document.getElementById('historybutton').addEventListener("click",() => {
         document.getElementById("clicksound").play();
-        redo();
+        document.getElementsByClassName('historycontainer')[0].style.display = "flex";
+    })
+    document.getElementById('closehistory').addEventListener('click',()=>{
+        document.getElementById("clicksound").play();
+        document.getElementsByClassName('historycontainer')[0].style.display = "none";
     })
 });
 function createhexpoints(a, svg) {
@@ -147,6 +166,16 @@ function createcircle(p, svg,i,j) {
             innerringunlocked();
             scorecalculation();
             selectaudio();
+            const color = currentplayer == 2? "BLUE " : "RED ";
+            const [i, j] = circle.dataset.index.split('-').map(Number);
+            let str = color + " " + "[" + [i,j] + "]";
+            console.log(str);
+            counter++;
+            const historywindow = document.getElementById("historydata");
+            const newmove = document.createElement("p");
+            newmove.textContent = `${counter}` + " .   " + str;
+            historywindow.appendChild(newmove);
+            history.push(str);
             if(remainingtitans[1] == 0 && remainingtitans[2] == 0 )
             {
                 phase="movement";
@@ -242,6 +271,16 @@ function createcircle(p, svg,i,j) {
         console.log(`Moved from ${selectedcircle.dataset.index} to ${circle.dataset.index}`);
         selectedcircle = null;
         currentplayer = 3 - currentplayer;
+        const color = currentplayer == 2? "BLUE " : "RED ";
+        const [i, j] = circle.dataset.index.split('-').map(Number);
+        let str = color + " " + "[" + [si,sj] + "] to " + "[" + [i,j] + "]" ;
+        console.log(str);
+        counter++;
+        const historywindow = document.getElementById("historydata");
+        const newmove = document.createElement("p");
+        newmove.textContent = `${counter}` + " .   " + str;
+        historywindow.appendChild(newmove);
+        history.push(str);
         gamestates = gamestates.slice(0,noofundo+1);
         gamestates.push(snapshotCircles());
         noofundo++;
@@ -309,7 +348,6 @@ function setwieght(svg){
         s=100;
     }
 }
-console.log(weight);
 function innerringunlocked(){
     let outerringcircle =window.circle[unlockedring];
     let filled = true;
@@ -396,6 +434,12 @@ function eliminatetitan(){
                 temptitan.setAttribute("fill","grey");
                 temptitan.setAttribute("stroke", "white");
                 eliminated = true;
+                const color = currentplayer == 2? "BLUE " : "RED ";
+                let str = color + "[" + i + "," + j + "]  Eliminated";
+                const historywindow = document.getElementById("historydata");
+                const newmove = document.createElement("p");
+                newmove.textContent =  "   -->   " + str;
+                historywindow.appendChild(newmove);
                 ownedtitans[currentplayer]--;
                 decidewinner();
             }
@@ -460,6 +504,7 @@ function decidewinner(){
         clearInterval(interval1);
         clearInterval(interval2);
         gameover = true;
+        winner = 2;
     }
    
     else if(ownedtitans[2] == 1){
@@ -470,6 +515,7 @@ function decidewinner(){
         clearInterval(interval1);
         clearInterval(interval2);
         gameover = true;
+        winner = 1;
     }
     else if(checkinnermostringfilled()){
         if(redscore > bluescore){
@@ -480,6 +526,7 @@ function decidewinner(){
         clearInterval(interval1);
         clearInterval(interval2);
         gameover = true;
+        winner = 2;
         }
         else if(bluescore > redscore)
         {
@@ -490,6 +537,7 @@ function decidewinner(){
             clearInterval(interval1);
             clearInterval(interval2);
             gameover = true;
+            winner = 1;
         }
         else
         {
@@ -509,6 +557,7 @@ function decidewinner(){
         clearInterval(interval1);
         clearInterval(interval2);
         gameover = true;
+        winner = 1;
     }
     else if(ownedtitans[1] == 1){
         const winner = document.getElementById("result");
@@ -518,9 +567,22 @@ function decidewinner(){
         clearInterval(interval1);
         clearInterval(interval2);
         gameover = true;
+        winner = 2;
     }
     if(gameover){
         winaudio();
+        const newmove = document.createElement("p");
+        if(winner){
+            if(winner == 1)
+            newmove.textContent = "   BLUE WINS! ";
+            else
+            newmove.textContent = "   RED  WINS! ";
+            
+        }
+        else{
+            newmove.textContent = "  MATCH TIED:> " 
+        }
+        document.getElementById("historydata").appendChild(newmove);
     }
 }
 function checkinnermostringfilled(){
@@ -616,6 +678,10 @@ function undo() {
     if(noofundo > 0){
         noofundo--;
         changegamestate();
+        currentplayer = 3 - currentplayer;
+        remainingtitans[currentplayer]++;
+        starttime();
+        setcolor();
     }
 }
 function redo(){
@@ -623,6 +689,10 @@ function redo(){
     if(noofundo < temp - 1){
         noofundo++;
         changegamestate();
+        currentplayer = 3 - currentplayer;
+        remainingtitans[currentplayer]--;
+        starttime();
+        setcolor();
     }
 }
 function changegamestate(){

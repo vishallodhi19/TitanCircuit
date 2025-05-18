@@ -12,7 +12,23 @@
             </svg>
              <div class="result" id="result">
                   Game Over!
-             </div>  
+             </div> 
+             <div class="historycontainer">
+                 <div id="history">
+                 <div class="format"> 
+                    <div class="format-header">
+                    <h2>HISTORY</h2>
+                    <button id="closehistory"><img src="close.png"></button>
+                    </div>
+                    <h4> Format : [Ring,Index]</h4>
+                    <p>Ring (0-2) : Representing Innermost To Outermost.</p>
+                    <p>Index (0,2) : Starting At Rightmost Circle and In Clockwise Direction.</p>
+                 </div>
+                 <div id="historydata">
+                    
+                 </div>
+                </div>
+             </div> 
         </div>
             <div class="scorecard-container">
             <table  class="scorecard" >
@@ -38,6 +54,7 @@
             <button id="reset"> <img src="reset.png" alt="reset" > </button>
             <button id="undo"> <img src="undo.png" alt="reset" > </button>
             <button id="redo"> <img src="redo.png" alt="reset" > </button>
+            <button id="historybutton"> <img src="history.png" alt="reset" > </button>
         </div>
         <audio id="selectsound" src="mixkit-interface-device-click-2577.wav" preload="auto" ></audio>
         <audio id="jumpsound" src="mixkit-arcade-game-jump-coin-216.wav" preload="auto"></audio>

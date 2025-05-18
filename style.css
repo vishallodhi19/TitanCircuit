@@ -18,7 +18,7 @@ body {
     height: 100vh;
     width: 100vw; 
     position: relative;
-    z-index: 1;
+    z-index: 200;
 }
 .field {
     display: block;
@@ -105,7 +105,7 @@ body {
     left: 90%;
     transform: translateY(-50%);
     width: 52px;
-    height: 192px;
+    height: 240px;
     background-color:#252a32;
     border: 2px solid #5d5a5a;
     border-radius: 26px;
@@ -116,7 +116,7 @@ body {
     align-items: center;
     z-index: 1000;
 }
-.selectmode button {
+.selectmode button ,#closehistory{
     background-color: #5d5a5a;
     margin: 5px;
     height: 36px;
@@ -131,7 +131,7 @@ body {
     overflow: hidden;
     box-sizing: border-box;
 }
-.selectmode button img {
+.selectmode button img,#closehistory img {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -139,10 +139,46 @@ body {
     display: block;
     pointer-events: none;
 }
-.selectmode button:hover{
+.selectmode button:hover, #closehistory:hover{
     background-color: rgb(54, 56, 55);
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.4);
     transition: 0.8s;
+}
+.historycontainer {
+    background-color: #5d5a5a;
+    display : none;
+    flex-direction: column;
+    height: 100%;
+    width: 400px;
+    position: fixed;
+    top : 0%;
+    left : 0%;
+    border : 4px solid grey;
+    margin : none;
+    overflow: hidden;
+    z-index: 1000;
+}
+#historydata {
+    flex: 1 1 auto;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-left: 1vw;
+}
+.format{
+    background-color: rgb(75, 78, 81);
+    border: 4px dotted black ;
+    padding-left: 5px;
+}
+.format-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.format-header h2 {
+    flex: 1;
+    text-align: center;
+    margin: 0;
+    overflow: auto !important;
 }
 @media (max-aspect-ratio: 1/1) {
     .selectmode {
@@ -160,6 +196,7 @@ body {
         border-bottom: 3px solid #5d5a5a;
         padding: 16px;
         gap: 1vh;
+        z-index: 100;
     }
     .selectmode button {
         width: 5vh;
@@ -212,5 +249,10 @@ body {
     .result{
         position: fixed;
         top: 10%;
+    }
+    .historycontainer{
+        height: 100%;
+        width: 50%;
+        font-size: 1.3em;
     }
 }
