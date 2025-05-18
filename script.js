@@ -18,7 +18,7 @@ let gamestates = [];
 let noofundo = -1;
 let history = [];
 var counter = 0;
-var winner = 0;
+var winnerplayer = 0;
 window.circle = [];
 for(let i=0;i<3;i++){
     window.circle.push([]);
@@ -327,7 +327,7 @@ function createtext(x,y){
     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
     text.setAttribute("x", x);
     text.setAttribute("y", y);
-    text.setAttribute("fill", "rgb(231, 116, 15)");
+    text.setAttribute("fill", "rgb(8, 249, 117)");
     text.setAttribute("font-size", "28");
     text.setAttribute("text-anchor", "middle");
     return text;
@@ -504,7 +504,7 @@ function decidewinner(){
         clearInterval(interval1);
         clearInterval(interval2);
         gameover = true;
-        winner = 2;
+        winnerplayer = 2;
     }
    
     else if(ownedtitans[2] == 1){
@@ -515,7 +515,7 @@ function decidewinner(){
         clearInterval(interval1);
         clearInterval(interval2);
         gameover = true;
-        winner = 1;
+        winnerplayer = 1;
     }
     else if(checkinnermostringfilled()){
         if(redscore > bluescore){
@@ -526,7 +526,7 @@ function decidewinner(){
         clearInterval(interval1);
         clearInterval(interval2);
         gameover = true;
-        winner = 2;
+        winnerplayer = 2;
         }
         else if(bluescore > redscore)
         {
@@ -537,7 +537,7 @@ function decidewinner(){
             clearInterval(interval1);
             clearInterval(interval2);
             gameover = true;
-            winner = 1;
+            winnerplayer = 1;
         }
         else
         {
@@ -557,7 +557,7 @@ function decidewinner(){
         clearInterval(interval1);
         clearInterval(interval2);
         gameover = true;
-        winner = 1;
+        winnerplayer = 1;
     }
     else if(ownedtitans[1] == 1){
         const winner = document.getElementById("result");
@@ -567,13 +567,13 @@ function decidewinner(){
         clearInterval(interval1);
         clearInterval(interval2);
         gameover = true;
-        winner = 2;
+        winnerplayer = 2;
     }
     if(gameover){
         winaudio();
         const newmove = document.createElement("p");
-        if(winner){
-            if(winner == 1)
+        if(winnerplayer){
+            if(winnerplayer == 1)
             newmove.textContent = "   BLUE WINS! ";
             else
             newmove.textContent = "   RED  WINS! ";
