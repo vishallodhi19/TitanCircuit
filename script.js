@@ -7,7 +7,7 @@ let interval1,interval2;
 let timeperturn = 30;
 var unlockedring = 2;
 var remainingtitans = {1 : 4,2 : 4};
-var ownedtitans = {1 : 4,2 : 4};
+var ownedtitans = {1 : 0,2 : 0};
 let gameover = false;
 let pausegame = false;
 var phase = "placement";
@@ -176,6 +176,7 @@ function createcircle(p, svg,i,j) {
             newmove.textContent = `${counter}` + " .   " + str;
             historywindow.appendChild(newmove);
             history.push(str);
+            console.log("remaining titans : ", remainingtitans);
             if(remainingtitans[1] == 0 && remainingtitans[2] == 0 )
             {
                 phase="movement";
@@ -286,8 +287,8 @@ function createcircle(p, svg,i,j) {
         noofundo++;
         setcolor();
         innerringunlocked();
-        scorecalculation();
         eliminatetitan();
+        scorecalculation();
         decidewinner();
         jumpaudio();
         starttime();
@@ -414,6 +415,7 @@ function findneighbouringcircle() {
     }
 }
 function eliminatetitan(){
+    if(phase == 'placement')  return;
     let eliminated = false;
     for(let i=0;i<3;i++){
         for(let j=0;j<6;j++){
@@ -484,7 +486,7 @@ function scorecalculation(){
     bluescore/=2;
     document.getElementById("bluescore").innerHTML=`${bluescore}`;
     document.getElementById("redscore").innerHTML=`${redscore}`;
-
+    console.log(ownedtitans);
 }
 function decreamenttime(){
     if(timer[currentplayer] > 0 && timeperturn > 0)
@@ -516,7 +518,16 @@ function decidewinner(){
         gameover = true;
         winnerplayer = 2;
     }
-   
+    else if(timer[2] == 0){
+        const winner =document.getElementById("result");
+        winner.style.display = "flex";
+        winner.style.background = "cornflowerblue"
+        winner.innerHTML="BLUE WINS!";
+        clearInterval(interval1);
+        clearInterval(interval2);
+        gameover = true;
+        winnerplayer = 1;
+       }
     else if(ownedtitans[2] == 1){
         const winner =document.getElementById("result");
         winner.style.display = "flex";
@@ -526,6 +537,16 @@ function decidewinner(){
         clearInterval(interval2);
         gameover = true;
         winnerplayer = 1;
+    }
+    else if(ownedtitans[1] == 1){
+        const winner = document.getElementById("result");
+        winner.style.display = "flex";
+        winner.style.background = "crimson"
+        winner.innerHTML="RED WINS!";
+        clearInterval(interval1);
+        clearInterval(interval2);
+        gameover = true;
+        winnerplayer = 2;
     }
     else if(checkinnermostringfilled()){
         if(redscore > bluescore){
@@ -558,26 +579,6 @@ function decidewinner(){
             clearInterval(interval2);
             gameover = true;
         }
-    }
-    else if(timer[2] == 0){
-        const winner =document.getElementById("result");
-        winner.style.display = "flex";
-        winner.style.background = "cornflowerblue"
-        winner.innerHTML="BLUE WINS!";
-        clearInterval(interval1);
-        clearInterval(interval2);
-        gameover = true;
-        winnerplayer = 1;
-    }
-    else if(ownedtitans[1] == 1){
-        const winner = document.getElementById("result");
-        winner.style.display = "flex";
-        winner.style.background = "crimson"
-        winner.innerHTML="RED WINS!";
-        clearInterval(interval1);
-        clearInterval(interval2);
-        gameover = true;
-        winnerplayer = 2;
     }
     if(gameover){
         winaudio();
@@ -701,9 +702,12 @@ function undo() {
         changegamestate();
         eliminatetitan();
         currentplayer = 3 - currentplayer;
-        remainingtitans[currentplayer]++;
         starttime();
         setcolor();
+        const historywindow = document.getElementById("historydata");
+        const newmove = document.createElement("p");
+        newmove.textContent =  "    UNDO  "
+        historywindow.appendChild(newmove);
     }
 }
 function redo(){
@@ -711,11 +715,14 @@ function redo(){
     if(noofundo < temp - 1){
         noofundo++;
         changegamestate();
-        currentplayer = 3 - currentplayer;
         eliminatetitan();
-        remainingtitans[currentplayer]--;
+        currentplayer = 3 - currentplayer;
         starttime();
         setcolor();
+        const historywindow = document.getElementById("historydata");
+        const newmove = document.createElement("p");
+        newmove.textContent =  "    REDO  "
+        historywindow.appendChild(newmove);
     }
 }
 function changegamestate(){
@@ -731,6 +738,7 @@ function changegamestate(){
                 window.circle[i][j].dataset.player = tempcircles[i][j].player;
             }
         }
+        updateRemainingTitans();
 }
 function showalert(str){
     const alertconatiner = document.getElementById("alertbox");
@@ -748,4 +756,13 @@ function showalert(str){
 function stopaudio(audiosource){
     if(!audiosource)  return;
     audiosource.pause();  
+}
+function updateRemainingTitans() {
+    if (phase === "placement") {
+        remainingtitans[1] = 4 - ownedtitans[1];
+        remainingtitans[2] = 4 - ownedtitans[2];
+    } else {
+        remainingtitans[1] = 0;
+        remainingtitans[2] = 0;
+    }
 }
